@@ -3,19 +3,19 @@ var Application;
 (function (Application) {
     var ApplicationController = (function () {
         function ApplicationController(http, interval, scope) {
-            var _this = this;
             this.http = http;
             this.interval = interval;
             this.scope = scope;
             this._tableRows = 10;
             this._tableColumns = 10;
             this._playing = false;
+            this._selectedTable = 'glider';
             this.initTable();
-            this.scope.$on("$destroy", function () {
-                _this.stopTimer();
-            });
+            this.getTablesFromBackend();
+            this.registerDestroyer();
         }
         ApplicationController.prototype.initTable = function () {
+            var _this = this;
             this._table = [];
             for (var i = 0; i < this._tableRows; i++) {
                 var row = {
@@ -34,6 +34,28 @@ var Application;
                 }
                 this._table.push(row);
             }
+            this.http({
+                method: 'POST',
+                url: 'http://be.gameoflife/api/table/' + this._selectedTable,
+                data: { 'table': this._table }
+            }).then(function (resp) {
+                _this._table = resp.data.table;
+            });
+        };
+        ApplicationController.prototype.registerDestroyer = function () {
+            var _this = this;
+            this.scope.$on("$destroy", function () {
+                _this.stopTimer();
+            });
+        };
+        ApplicationController.prototype.getTablesFromBackend = function () {
+            var _this = this;
+            this.http({
+                method: 'GET',
+                url: 'http://be.gameoflife/api/table'
+            }).then(function (tables) {
+                _this._availableTables = tables.data;
+            });
         };
         ApplicationController.prototype.getNextFromBackend = function () {
             var _this = this;
@@ -79,6 +101,23 @@ var Application;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(ApplicationController.prototype, "availableTables", {
+            get: function () {
+                return this._availableTables;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ApplicationController.prototype, "selectedTable", {
+            get: function () {
+                return this._selectedTable;
+            },
+            set: function (value) {
+                this._selectedTable = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         ApplicationController.prototype.getNext = function () {
             this.getNextFromBackend();
         };
@@ -106,6 +145,9 @@ var Application;
         };
         ApplicationController.prototype.changeCellState = function (cell) {
             cell.state = cell.state == 1 ? 0 : 1;
+        };
+        ApplicationController.prototype.reinitTable = function () {
+            this.initTable();
         };
         ApplicationController.INTERVAL_IN_MILLISEC = 3000;
         return ApplicationController;

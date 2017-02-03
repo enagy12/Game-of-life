@@ -19,13 +19,19 @@ declare namespace Application {
         private _timer;
         private _table;
         private _playing;
+        private _availableTables;
+        private _selectedTable;
         constructor(http: angular.IHttpService, interval: angular.IIntervalService, scope: angular.IScope);
         private initTable();
+        private registerDestroyer();
+        private getTablesFromBackend();
         private getNextFromBackend();
         table: Array<ITableRow>;
         playing: boolean;
         tableRows: number;
         tableColumns: number;
+        availableTables: Array<string>;
+        selectedTable: string;
         getNext(): void;
         startPlaying(): void;
         stopPlaying(): void;
@@ -33,5 +39,6 @@ declare namespace Application {
         private stopTimer();
         updateTable(): void;
         changeCellState(cell: ITableCell): void;
+        reinitTable(): void;
     }
 }

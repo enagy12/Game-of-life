@@ -26,6 +26,8 @@ namespace Application {
         private _timer: any;
         private _table: Array<ITableRow>;
         private _playing: boolean = false;
+        private _availableTables: Array<string>;
+        private _selectedTable: string = 'glider';
 
         constructor(
             private http: angular.IHttpService,
@@ -33,10 +35,8 @@ namespace Application {
             private scope: angular.IScope
         ) {
             this.initTable();
-
-            this.scope.$on("$destroy", () => {
-                this.stopTimer();
-            });
+            this.getTablesFromBackend();
+            this.registerDestroyer();
         }
 
         private initTable(): void {
@@ -61,6 +61,29 @@ namespace Application {
                 }
                 this._table.push(row);
             }
+
+            this.http({
+                method: 'POST',
+                url: 'http://be.gameoflife/api/table/'+this._selectedTable,
+                data: { 'table' : this._table }
+            }).then((resp: any) => {
+                this._table = resp.data.table;
+            });
+        }
+
+        private registerDestroyer(): void {
+            this.scope.$on("$destroy", () => {
+                this.stopTimer();
+            });
+        }
+
+        private getTablesFromBackend(): void {
+            this.http({
+                method: 'GET',
+                url: 'http://be.gameoflife/api/table'
+            }).then((tables: any) => {
+                this._availableTables = tables.data;
+            });
         }
 
         private getNextFromBackend(): void {
@@ -97,6 +120,18 @@ namespace Application {
             this._tableColumns = value;
         }
 
+        public get availableTables(): Array<string> {
+            return this._availableTables;
+        }
+
+        public get selectedTable(): string {
+            return this._selectedTable;
+        }
+
+        public set selectedTable(value : string) {
+            this._selectedTable = value;
+        }
+
         public getNext(): void {
             this.getNextFromBackend();
         }
@@ -129,6 +164,10 @@ namespace Application {
 
         public changeCellState(cell: ITableCell): void {
             cell.state = cell.state == 1 ? 0 : 1;
+        }
+
+        public reinitTable(): void {
+            this.initTable();
         }
     }
 

@@ -20,34 +20,30 @@ class TablesRS extends RequestHandler {
     function handleRequest() {
         $route = $this->request->getNextRoute();
         switch ($route) {
-            case null:         // /table list
+            case null:
                 $this->hasToBeGet();
-                return ['1', '2'];
+                return ['glider', 'gun46'];
 
-            case 'next':         // /table/next
+            case 'next':
                 $this->hasToBePost();
                 $this->hasToHavePayload();
                 return $this->calculateNextStep($this->request->getPayload());
 
             default:
-                if (is_numeric($route)) {
-                    return $this->handleItemRequest($route);
-                } else {                    // /places/<any>
+                if (is_string($route)) {
+                    $this->hasToBePost();
+                    $this->hasToHavePayload();
+                    return $this->initTableFromLif($route, $this->request->getPayload());
+                } else {
                     throw new UnknownPathException();
                 }
         }
     }
 
-    private function handleItemRequest($itemId) {
-        $action = $this->request->getNextRoute();
-        switch ($action) {
-            case null:          // /tables/:id
-                $this->hasToBeGet();
-                return [];
-
-            default:            // /places/:id/<any>
-                throw new UnknownPathException();
-        }
+    private function initTableFromLif($name, $current) {
+        $tableLif = file_get_contents(__DIR__.'/'.$name.'.lif');
+        //TODO: lif fájl parse
+        //http://www.conwaylife.com/wiki/Life_1.05
     }
 
     private function calculateNextStep($current) {
