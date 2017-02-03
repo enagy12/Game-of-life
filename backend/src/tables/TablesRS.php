@@ -13,7 +13,7 @@ use hu\doxasoft\phpbackend\RequestHandler;
  */
 class TablesRS extends RequestHandler {
 
-    public function __construct(Requester &$requegit add .ster, Request &$req) {
+    public function __construct(Requester &$requester, Request &$req) {
         parent::__construct($requester, $req);
     }
 
