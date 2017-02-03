@@ -13,6 +13,8 @@ use hu\doxasoft\phpbackend\RequestHandler;
  */
 class TablesRS extends RequestHandler {
 
+    private static $BASE_LIF_URL = __DIR__.'/lif';
+
     public function __construct(Requester &$requester, Request &$req) {
         parent::__construct($requester, $req);
     }
@@ -22,13 +24,11 @@ class TablesRS extends RequestHandler {
         switch ($route) {
             case null:
                 $this->hasToBeGet();
-                return ['Pi', 'Slopuf2', 'Rabbits', 'Glider', 'LightweightSpaceship'];
-
+                return $this->getAvailableTables();
             case 'next':
                 $this->hasToBePost();
                 $this->hasToHavePayload();
                 return $this->calculateNextStep($this->request->getPayload());
-
             default:
                 if (is_string($route)) {
                     $this->hasToBePost();
@@ -41,7 +41,12 @@ class TablesRS extends RequestHandler {
     }
 
     private function getAvailableTables() {
-        //$files = array_diff(scandir($path), array('.', '..'));
+        $fileNames = [];
+        $files = array_diff(scandir(TablesRS::$BASE_LIF_URL), array('.', '..'));
+        foreach($files as $file) {
+            $fileNames[] = pathinfo($file, PATHINFO_FILENAME);
+        }
+        return $fileNames;
     }
 
     private function initTableFromLif($name, $data) {
@@ -54,7 +59,7 @@ class TablesRS extends RequestHandler {
         $shapeLeft = 0;
         $extraRowInShape = 0;
 
-        $tableLif = file(__DIR__.'/'.$name.'.lif');
+        $tableLif = file(TablesRS::$BASE_LIF_URL.'/'.$name.'.lif');
         foreach($tableLif as $line) {
             if (0 === strpos($line, '#P')) {
                 $shapeView = true;
