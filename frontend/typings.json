@@ -1,0 +1,8 @@
+{
+  "dependencies": {},
+  "globalDependencies": {
+    "angular": "registry:dt/angular#1.5.0+20160619025852",
+    "jquery": "registry:dt/jquery#1.10.0+20160620094458",
+    "angular-ui-router": "registry:dt/angular-ui-router#1.1.5+20160707113237"
+  }
+}

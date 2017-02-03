@@ -1,0 +1,21 @@
+{
+    "name": "doxasoft/phpbackend",
+    "description": "REST backend by DOXA Soft implemented in PHP",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Fodor Manuel",
+            "email": "fodormanuel@gmail.com"
+        }
+    ],
+    "minimum-stability": "RC",
+    "require": {
+        "lcobucci/jwt": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "hu\\doxasoft\\phpbackend\\": "phpbackend/src/",
+            "hu\\chrome\\gameoflife\\": "src/"
+        }
+    }
+}
