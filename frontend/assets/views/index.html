@@ -1,5 +1,5 @@
 <div>
-    <select data-ng-model="appCtrl.selectedTable" data-ng-change="appCtrl.reinitTable()">
+    <select data-ng-model="appCtrl.selectedTable" data-ng-change="appCtrl.initTable()">
         <option data-ng-repeat="item in appCtrl.availableTables" value="{{item}}">{{item}}</option>
     </select>
 </div>
@@ -10,12 +10,13 @@
 </div>
 <div>
     <label for="table-rows" data-translate>Sor:</label>
-    <input id="table-rows" type="number" min="10" max="20" data-ng-model="appCtrl.tableRows" data-ng-change="appCtrl.updateTable()" />
+    <input id="table-rows" type="number" min="10" max="40" data-ng-model="appCtrl.tableRows" data-ng-change="appCtrl.updateTable()" />
     <label for="table-columns" data-translate>Oszlop:</label>
-    <input id="table-columns" type="number" min="10" max="20" data-ng-model="appCtrl.tableColumns" data-ng-change="appCtrl.updateTable()" />
+    <input id="table-columns" type="number" min="10" max="60" data-ng-model="appCtrl.tableColumns" data-ng-change="appCtrl.updateTable()" />
 </div>
 <div>
     <a href="#" data-ng-click="appCtrl.getNext()" data-ng-if="!appCtrl.playing">Következő</a>
     <a href="#" data-ng-click="appCtrl.startPlaying()" data-ng-if="!appCtrl.playing">Lejátszás</a>
     <a href="#" data-ng-click="appCtrl.stopPlaying()" data-ng-if="appCtrl.playing">Megállítás</a>
+    <a href="#" data-ng-click="appCtrl.initTable()" data-ng-if="!appCtrl.playing">Újra</a>
 </div>

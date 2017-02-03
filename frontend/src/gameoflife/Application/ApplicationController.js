@@ -6,10 +6,10 @@ var Application;
             this.http = http;
             this.interval = interval;
             this.scope = scope;
-            this._tableRows = 10;
-            this._tableColumns = 10;
+            this._tableRows = 25;
+            this._tableColumns = 40;
             this._playing = false;
-            this._selectedTable = 'glider';
+            this._selectedTable = 'Pi';
             this.initTable();
             this.getTablesFromBackend();
             this.registerDestroyer();
@@ -27,17 +27,18 @@ var Application;
                         column: j,
                         state: 0
                     };
-                    if (i === 2 && j === 4 || i === 3 && j === 5 || i === 4 && j === 3 || i === 4 && j === 4 || i === 4 && j === 5) {
-                        cell.state = 1;
-                    }
                     row.cells.push(cell);
                 }
                 this._table.push(row);
             }
             this.http({
                 method: 'POST',
-                url: 'http://be.gameoflife/api/table/' + this._selectedTable,
-                data: { 'table': this._table }
+                url: ApplicationController.BASE_URL + this._selectedTable,
+                data: {
+                    'table': this._table,
+                    'rows': this._tableRows,
+                    'cols': this._tableColumns
+                }
             }).then(function (resp) {
                 _this._table = resp.data.table;
             });
@@ -52,7 +53,7 @@ var Application;
             var _this = this;
             this.http({
                 method: 'GET',
-                url: 'http://be.gameoflife/api/table'
+                url: ApplicationController.BASE_URL
             }).then(function (tables) {
                 _this._availableTables = tables.data;
             });
@@ -61,7 +62,7 @@ var Application;
             var _this = this;
             this.http({
                 method: 'POST',
-                url: 'http://be.gameoflife/api/table/next',
+                url: ApplicationController.BASE_URL + '/next',
                 data: { 'table': this._table }
             }).then(function (resp) {
                 _this._table = resp.data.table;
@@ -133,7 +134,7 @@ var Application;
             var _this = this;
             this._timer = this.interval(function () {
                 _this.getNext();
-            }, ApplicationController.INTERVAL_IN_MILLISEC);
+            }, 200);
         };
         ApplicationController.prototype.stopTimer = function () {
             if (!!this._timer) {
@@ -146,10 +147,7 @@ var Application;
         ApplicationController.prototype.changeCellState = function (cell) {
             cell.state = cell.state == 1 ? 0 : 1;
         };
-        ApplicationController.prototype.reinitTable = function () {
-            this.initTable();
-        };
-        ApplicationController.INTERVAL_IN_MILLISEC = 3000;
+        ApplicationController.BASE_URL = 'http://be.gameoflife/api/table/';
         return ApplicationController;
     }());
     Application.ApplicationController = ApplicationController;

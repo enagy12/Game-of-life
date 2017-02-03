@@ -20,14 +20,14 @@ namespace Application {
 
     export class ApplicationController {
 
-        private static INTERVAL_IN_MILLISEC: number = 3000;
-        private _tableRows: number = 10;
-        private _tableColumns: number = 10;
+        private static BASE_URL: string = 'http://be.gameoflife/api/table/';
+        private _tableRows: number = 25;
+        private _tableColumns: number = 40;
         private _timer: any;
         private _table: Array<ITableRow>;
         private _playing: boolean = false;
         private _availableTables: Array<string>;
-        private _selectedTable: string = 'glider';
+        private _selectedTable: string = 'Pi';
 
         constructor(
             private http: angular.IHttpService,
@@ -39,7 +39,7 @@ namespace Application {
             this.registerDestroyer();
         }
 
-        private initTable(): void {
+        public initTable(): void {
             this._table = [];
             for (var i = 0; i < this._tableRows; i++) {
                 var row: ITableRow = {
@@ -52,11 +52,6 @@ namespace Application {
                         state: 0
                     };
 
-                    //TODO: kezdeti alakzatot backendtő lekérdezni
-                    if (i === 2 && j === 4 || i === 3 && j === 5 || i === 4 && j === 3 || i === 4 && j === 4 || i === 4 && j === 5) {
-                        cell.state = 1;
-                    }
-
                     row.cells.push(cell);
                 }
                 this._table.push(row);
@@ -64,8 +59,12 @@ namespace Application {
 
             this.http({
                 method: 'POST',
-                url: 'http://be.gameoflife/api/table/'+this._selectedTable,
-                data: { 'table' : this._table }
+                url: ApplicationController.BASE_URL + this._selectedTable,
+                data: {
+                    'table': this._table,
+                    'rows': this._tableRows,
+                    'cols': this._tableColumns
+                }
             }).then((resp: any) => {
                 this._table = resp.data.table;
             });
@@ -80,7 +79,7 @@ namespace Application {
         private getTablesFromBackend(): void {
             this.http({
                 method: 'GET',
-                url: 'http://be.gameoflife/api/table'
+                url: ApplicationController.BASE_URL
             }).then((tables: any) => {
                 this._availableTables = tables.data;
             });
@@ -89,7 +88,7 @@ namespace Application {
         private getNextFromBackend(): void {
             this.http({
                 method: 'POST',
-                url: 'http://be.gameoflife/api/table/next',
+                url: ApplicationController.BASE_URL + '/next',
                 data: { 'table' : this._table }
             }).then((resp: any) => {
                 this._table = resp.data.table;
@@ -149,7 +148,7 @@ namespace Application {
         private startTimer(): void {
             this._timer = this.interval( () => {
                 this.getNext();
-            }, ApplicationController.INTERVAL_IN_MILLISEC);
+            }, 200);
         }
 
         private stopTimer(): void {
@@ -164,10 +163,6 @@ namespace Application {
 
         public changeCellState(cell: ITableCell): void {
             cell.state = cell.state == 1 ? 0 : 1;
-        }
-
-        public reinitTable(): void {
-            this.initTable();
         }
     }
 

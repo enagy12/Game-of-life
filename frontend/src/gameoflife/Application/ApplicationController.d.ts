@@ -13,7 +13,7 @@ declare namespace Application {
         private http;
         private interval;
         private scope;
-        private static INTERVAL_IN_MILLISEC;
+        private static BASE_URL;
         private _tableRows;
         private _tableColumns;
         private _timer;
@@ -22,7 +22,7 @@ declare namespace Application {
         private _availableTables;
         private _selectedTable;
         constructor(http: angular.IHttpService, interval: angular.IIntervalService, scope: angular.IScope);
-        private initTable();
+        initTable(): void;
         private registerDestroyer();
         private getTablesFromBackend();
         private getNextFromBackend();
@@ -39,6 +39,5 @@ declare namespace Application {
         private stopTimer();
         updateTable(): void;
         changeCellState(cell: ITableCell): void;
-        reinitTable(): void;
     }
 }
