@@ -22,7 +22,7 @@ class TablesRS extends RequestHandler {
         switch ($route) {
             case null:
                 $this->hasToBeGet();
-                return ['glider', 'gun46'];
+                return ['Pi', 'Slopuf2', 'Rabbits', 'Glider', 'LightweightSpaceship'];
 
             case 'next':
                 $this->hasToBePost();
@@ -40,35 +40,67 @@ class TablesRS extends RequestHandler {
         }
     }
 
-    private function initTableFromLif($name, $current) {
-        $tableLif = file_get_contents(__DIR__.'/'.$name.'.lif');
-        //TODO: lif fájl parse
-        //http://www.conwaylife.com/wiki/Life_1.05
+    private function getAvailableTables() {
+        //$files = array_diff(scandir($path), array('.', '..'));
     }
 
-    private function calculateNextStep($current) {
-        for ($i = 0; $i < count($current->table); $i++) {
-            for ($j = 0; $j < count($current->table[$i]->cells); $j++) {
-                if ($current->table[$i]->cells[$j]->state == 1) {
-                    $this->checkAliveAndDeadIfNeeded($i, $j, $current->table);
+    private function initTableFromLif($name, $data) {
+        $shapeView = false;
+        $tableRows = (int)$data->rows;
+        $tableCols = (int)$data->cols;
+        $tableCenterRow = (int)round($tableRows / 2, 0, PHP_ROUND_HALF_ODD)-1;
+        $tableCenterCol = (int)round($tableCols / 2, 0, PHP_ROUND_HALF_ODD)-1;
+        $shapeTop = 0;
+        $shapeLeft = 0;
+        $extraRowInShape = 0;
+
+        $tableLif = file(__DIR__.'/'.$name.'.lif');
+        foreach($tableLif as $line) {
+            if (0 === strpos($line, '#P')) {
+                $shapeView = true;
+                $line = trim(str_replace('#P', '', $line));
+                $shapeTopLeftCoordinates = explode(' ', $line);
+                if (sizeof($shapeTopLeftCoordinates)) {
+                    $shapeTop = $shapeTopLeftCoordinates[0];
+                    $shapeLeft = $shapeTopLeftCoordinates[1];
+                }
+                $extraRowInShape = 0;
+            } else if ($shapeView) {
+                $splittedLine = str_split(trim($line));
+                for ($i = 0; $i < count($splittedLine); $i++) {
+                    if ($splittedLine[$i] == '*') {
+                        $data->table[$tableCenterRow + $shapeTop + $extraRowInShape]->cells[$tableCenterCol + $shapeLeft + $i]->state = 1;
+                    }
+                }
+                $extraRowInShape++;
+            }
+        }
+        return $data;
+    }
+
+    private function calculateNextStep($data) {
+        for ($i = 0; $i < count($data->table); $i++) {
+            for ($j = 0; $j < count($data->table[$i]->cells); $j++) {
+                if ($data->table[$i]->cells[$j]->state == 1) {
+                    $this->checkAliveAndDeadIfNeeded($i, $j, $data->table);
                 } else {
-                    $this->checkDeadAndReviveIfNeeded($i, $j, $current->table);
+                    $this->checkDeadAndReviveIfNeeded($i, $j, $data->table);
                 }
             }
         }
 
-        for ($i = 0; $i < count($current->table); $i++) {
-            for ($j = 0; $j < count($current->table[$i]->cells); $j++) {
-                if ($current->table[$i]->cells[$j]->state == 2) {
-                    $current->table[$i]->cells[$j]->state = 0;
+        for ($i = 0; $i < count($data->table); $i++) {
+            for ($j = 0; $j < count($data->table[$i]->cells); $j++) {
+                if ($data->table[$i]->cells[$j]->state == 2) {
+                    $data->table[$i]->cells[$j]->state = 0;
                 }
-                if ($current->table[$i]->cells[$j]->state == 3) {
-                    $current->table[$i]->cells[$j]->state = 1;
+                if ($data->table[$i]->cells[$j]->state == 3) {
+                    $data->table[$i]->cells[$j]->state = 1;
                 }
             }
         }
 
-        return $current;
+        return $data;
     }
 
     private function checkAliveAndDeadIfNeeded($i, $j, $currentTable) {
