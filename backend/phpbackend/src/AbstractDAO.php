@@ -27,13 +27,13 @@ abstract class AbstractDAO {
      * @param \stdClass|object $dataRB
      * @return \stdClass|object
      */
-    abstract public function add(&$dataRB);
+    abstract public function add($dataRB);
 
     /**
      * @param \stdClass|object $dataRB
      * @return \stdClass|object
      */
-    abstract public function edit(&$dataRB);
+    abstract public function edit($dataRB);
 
     /**
      * @param int $id

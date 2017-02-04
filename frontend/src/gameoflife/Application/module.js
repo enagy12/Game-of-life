@@ -1,5 +1,5 @@
 "use strict";
-var module = angular.module('Application', ["ui.router"]);
+var module = angular.module('Application', ["ui.router", "ui.bootstrap"]);
 module.config(["$stateProvider", "$locationProvider", "$urlMatcherFactoryProvider", "$urlRouterProvider",
     function (stateProvider, locationProvider, urlMatcherFactoryProvider, urlRouterProvider) {
         urlMatcherFactoryProvider.strictMode(false);

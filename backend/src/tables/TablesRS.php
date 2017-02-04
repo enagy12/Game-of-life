@@ -10,13 +10,17 @@ use hu\doxasoft\phpbackend\RequestHandler;
  * Class TablesRS
  * @package hu\chrome\gameoflife\tables
  *
+ * @property TablesDAO $tablesDAO
  */
 class TablesRS extends RequestHandler {
+
+    private $tablesDAO;
 
     private static $BASE_LIF_URL = __DIR__.'/lif';
 
     public function __construct(Requester &$requester, Request &$req) {
         parent::__construct($requester, $req);
+        $this->tablesDAO = new TablesDAO();
     }
 
     function handleRequest() {
@@ -24,11 +28,15 @@ class TablesRS extends RequestHandler {
         switch ($route) {
             case null:
                 $this->hasToBeGet();
-                return $this->getAvailableTables();
+                return array_merge($this->getAvailableTablesFromFiles(), $this->tablesDAO->getAll());
             case 'next':
                 $this->hasToBePost();
                 $this->hasToHavePayload();
                 return $this->calculateNextStep($this->request->getPayload());
+            case 'add':
+                $this->hasToBePost();
+                $this->hasToHavePayload();
+                return $this->tablesDAO->add($this->request->getPayload());
             default:
                 if (is_string($route)) {
                     $this->hasToBePost();
@@ -40,11 +48,11 @@ class TablesRS extends RequestHandler {
         }
     }
 
-    private function getAvailableTables() {
+    private function getAvailableTablesFromFiles() {
         $fileNames = [];
         $files = array_diff(scandir(TablesRS::$BASE_LIF_URL), array('.', '..'));
         foreach($files as $file) {
-            $fileNames[] = pathinfo($file, PATHINFO_FILENAME);
+            $fileNames[] = array('table_name' => pathinfo($file, PATHINFO_FILENAME));
         }
         return $fileNames;
     }
@@ -108,21 +116,21 @@ class TablesRS extends RequestHandler {
         return $data;
     }
 
-    private function checkAliveAndDeadIfNeeded($i, $j, $currentTable) {
+    private function checkAliveAndDeadIfNeeded($i, $j, &$currentTable) {
         $neighborNumber = $this->checkNeighbor($i, $j, $currentTable);
         if ($neighborNumber < 2 || $neighborNumber > 3) {
             $currentTable[$i]->cells[$j]->state = 2; //become dead
         }
     }
 
-    private function checkDeadAndReviveIfNeeded($i, $j, $currentTable) {
+    private function checkDeadAndReviveIfNeeded($i, $j, &$currentTable) {
         $neighborNumber = $this->checkNeighbor($i, $j, $currentTable);
         if ($neighborNumber == 3) {
             $currentTable[$i]->cells[$j]->state = 3; //become alive
         }
     }
 
-    private function checkNeighbor($i, $j, $currentTable) {
+    private function checkNeighbor($i, $j, &$currentTable) {
         $neighborNumber = 0;
         for ($k = -1; $k <= 1; $k++) {
             if (isset($currentTable[$i-1]) && isset($currentTable[$i-1]->cells[$j+$k]) && $currentTable[$i-1]->cells[$j+$k]->state != 0 && $currentTable[$i-1]->cells[$j+$k]->state != 3) {

@@ -26,3 +26,21 @@
 .activeCell {
     background-color: #000;
 }
+
+.paddingRight10 {
+    padding-right: 10px;
+}
+
+.tableoflife select {
+    height: 26px;
+    line-height: 26px;
+}
+
+.successMessage {
+    color: #5cb85c;
+}
+
+.btnGlyphicon {
+    font-size: 25px;
+    vertical-align: middle;
+}

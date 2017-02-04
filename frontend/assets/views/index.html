@@ -1,22 +1,52 @@
-<div>
-    <select data-ng-model="appCtrl.selectedTable" data-ng-change="appCtrl.initTable()">
-        <option data-ng-repeat="item in appCtrl.availableTables" value="{{item}}">{{item}}</option>
-    </select>
+<div class="tableoflife">
+    <div class="col-md-12">
+        <h3>Az élet játéka</h3>
+    </div>
+    <div>
+        <div class="col-md-3">
+            <label for="table-type">Típus:</label>
+            <select id="table-type" data-ng-model="appCtrl.selectedTableName" data-ng-change="appCtrl.changeTable()">
+                <option data-ng-repeat="item in appCtrl.availableTables" value="{{item.table_name}}">{{item.table_name}}</option>
+            </select>
+        </div>
+        <div class="col-md-9">
+            <label for="table-name">Név:</label>
+            <input id="table-name"
+                   type="text"
+                   data-ng-model="appCtrl.tableNameToSave"
+                   data-uib-tooltip="Kérjük írjon be legalább 3 karaktert"
+                   data-tooltip-placement="bottom"
+                   data-tooltip-append-to-body="true"
+                   data-tooltip-enable="appCtrl.isTableNameTooltipVisisble()"
+                   data-tooltip-is-open="appCtrl.isTableNameWarningTooltipHasToAppear()"
+                   data-tooltip-trigger="none"
+            />
+            <a href="#" data-ng-click="appCtrl.saveTable()" data-ng-if="!appCtrl.playing" class="commandLink">mentés <span class="glyphicon glyphicon-floppy-disk btnGlyphicon"></span></a>
+
+            <label data-ng-if="appCtrl.isSuccessMessageVisisble()" class="successMessage">Sikeres mentés</label>
+        </div>
+    </div>
 </div>
 <div class="rTable">
     <div data-ng-repeat="row in appCtrl.table" class="rTableRow">
-        <div data-ng-repeat="cell in row.cells" class="rTableCell" data-ng-class="{'activeCell': !!cell.state}" data-ng-click="appCtrl.changeCellState(cell)"></div>
+        <div data-ng-repeat="cell in row.cells"
+             class="rTableCell"
+             data-ng-class="{'activeCell': !!cell.state}"
+             data-ng-click="appCtrl.changeCellState(cell)"
+        ></div>
     </div>
 </div>
-<div>
-    <label for="table-rows" data-translate>Sor:</label>
-    <input id="table-rows" type="number" min="10" max="40" data-ng-model="appCtrl.tableRows" data-ng-change="appCtrl.updateTable()" />
-    <label for="table-columns" data-translate>Oszlop:</label>
-    <input id="table-columns" type="number" min="10" max="60" data-ng-model="appCtrl.tableColumns" data-ng-change="appCtrl.updateTable()" />
-</div>
-<div>
-    <a href="#" data-ng-click="appCtrl.getNext()" data-ng-if="!appCtrl.playing">Következő</a>
-    <a href="#" data-ng-click="appCtrl.startPlaying()" data-ng-if="!appCtrl.playing">Lejátszás</a>
-    <a href="#" data-ng-click="appCtrl.stopPlaying()" data-ng-if="appCtrl.playing">Megállítás</a>
-    <a href="#" data-ng-click="appCtrl.initTable()" data-ng-if="!appCtrl.playing">Újra</a>
+<div class="col-md-12">
+    <div class="col-md-3">
+        <label for="table-rows">Sor:</label>
+        <input id="table-rows" type="number" min="10" max="40" data-ng-model="appCtrl.tableRows" data-ng-change="appCtrl.updateTable()" />
+        <label for="table-columns">Oszlop:</label>
+        <input id="table-columns" type="number" min="10" max="60" data-ng-model="appCtrl.tableColumns" data-ng-change="appCtrl.updateTable()" />
+    </div>
+    <div class="col-md-9">
+        <a href="#" data-ng-click="appCtrl.getNext()" data-ng-if="!appCtrl.playing" class="paddingRight10">következő <span class="glyphicon glyphicon-menu-right btnGlyphicon"></span></a>
+        <a href="#" data-ng-click="appCtrl.startPlaying()" data-ng-if="!appCtrl.playing" class="paddingRight10">lejátszás <span class="glyphicon glyphicon-play-circle btnGlyphicon"></span></a>
+        <a href="#" data-ng-click="appCtrl.stopPlaying()" data-ng-if="appCtrl.playing" class="paddingRight10">megállítás <span class="glyphicon glyphicon-stop btnGlyphicon"></span></a>
+        <a href="#" data-ng-click="appCtrl.initTable()" data-ng-if="!appCtrl.playing" class="paddingRight10">újra <span class="glyphicon glyphicon-refresh btnGlyphicon"></span></a>
+    </div>
 </div>
