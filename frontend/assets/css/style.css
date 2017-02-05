@@ -2,17 +2,22 @@
     display: block;
     width: 100%;
 }
-.rTableHeading, .rTableBody, .rTableFoot, .rTableRow{
+.rTableHeading, .rTableBody, .rTableFoot {
     clear: both;
+}
+
+.rTableRow {
+    clear: both;
+    display: inline-flex;
 }
 
 .rTableCell, .rTableHead {
     border: 1px solid #999999;
     float: left;
     overflow: hidden;
-    padding: 2px;
-    width: 25px;
-    height: 25px;
+    padding: 4px;
+    width: 20px;
+    height: 20px;
 }
 .rTable:after {
     visibility: hidden;

@@ -28,8 +28,8 @@ namespace Application {
 
         private static BASE_URL: string = 'http://be.gameoflife/api/table/';
         private static TABLE_NAME_MIN_LENGTH: number = 3;
-        private _tableRows: number = 25;
-        private _tableColumns: number = 40;
+        private _tableRows: number = 30;
+        private _tableColumns: number = 50;
         private _timer: any;
         private _table: Array<ITableRow>;
         private _playing: boolean = false;
@@ -101,6 +101,7 @@ namespace Application {
         private initializeTableObject(): void {
             if (!!this._selectedTableObject.id) {
                 this._table = this._selectedTableObject.table_data;
+                //TODO: column és row érték állítása
             } else {
                 this.http({
                     method: 'POST',
@@ -193,7 +194,7 @@ namespace Application {
         private startTimer(): void {
             this._timer = this.interval( () => {
                 this.getNext();
-            }, 300);
+            }, 600);
         }
 
         private stopTimer(): void {

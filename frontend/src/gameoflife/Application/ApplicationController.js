@@ -9,8 +9,8 @@ var Application;
             this.scope = scope;
             this.timeout = timeout;
             this.q = q;
-            this._tableRows = 25;
-            this._tableColumns = 40;
+            this._tableRows = 30;
+            this._tableColumns = 50;
             this._playing = false;
             this._selectedTableName = 'Pi';
             this._showTableNameWarningTooltip = false;
@@ -174,7 +174,7 @@ var Application;
             var _this = this;
             this._timer = this.interval(function () {
                 _this.getNext();
-            }, 300);
+            }, 600);
         };
         ApplicationController.prototype.stopTimer = function () {
             if (!!this._timer) {

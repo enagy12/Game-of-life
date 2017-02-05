@@ -92,27 +92,29 @@ class TablesRS extends RequestHandler {
     }
 
     private function calculateNextStep($data) {
-        for ($i = 0; $i < count($data->table); $i++) {
-            for ($j = 0; $j < count($data->table[$i]->cells); $j++) {
-                if ($data->table[$i]->cells[$j]->state == 1) {
-                    $this->checkAliveAndDeadIfNeeded($i, $j, $data->table);
+        $table = $data->table;
+        for ($i = 0; $i < count($table); $i++) {
+            $cells = $table[$i]->cells;
+            for ($j = 0; $j < count($cells); $j++) {
+                if ($cells[$j]->state == 1) {
+                    $this->checkAliveAndDeadIfNeeded($i, $j, $table);
                 } else {
-                    $this->checkDeadAndReviveIfNeeded($i, $j, $data->table);
+                    $this->checkDeadAndReviveIfNeeded($i, $j, $table);
                 }
             }
         }
 
-        for ($i = 0; $i < count($data->table); $i++) {
-            for ($j = 0; $j < count($data->table[$i]->cells); $j++) {
-                if ($data->table[$i]->cells[$j]->state == 2) {
-                    $data->table[$i]->cells[$j]->state = 0;
+        for ($i = 0; $i < count($table); $i++) {
+            $cells = $table[$i]->cells;
+            for ($j = 0; $j < count($cells); $j++) {
+                if ($cells[$j]->state == 2) {
+                    $cells[$j]->state = 0;
                 }
-                if ($data->table[$i]->cells[$j]->state == 3) {
-                    $data->table[$i]->cells[$j]->state = 1;
+                if ($cells[$j]->state == 3) {
+                    $cells[$j]->state = 1;
                 }
             }
         }
-
         return $data;
     }
 
