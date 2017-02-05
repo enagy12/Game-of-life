@@ -23,6 +23,7 @@ class DoxaBackendApp {
     private $request;
     private $response;
     private $services;
+    private $daos;
 
     /**
      * DoxaBackendApp constructor.
@@ -35,6 +36,7 @@ class DoxaBackendApp {
         $this->response = new Response();
         $this->requester = new Requester(new JWTService(), $this->request->getAuthorizationToken());
         $this->services = array();
+        $this->daos = array();
     }
 
     /**
@@ -80,7 +82,7 @@ class DoxaBackendApp {
      * @throws ClassNotFoundException Thrown if class not exists or not a subclass of RequestHandler
      * @throws PathAlreadyDefinedException Thrown if path is not defined or not a string or it has been already added to services
      */
-    public function addService($path, $class) {
+    public function addService($path, $class, $dao) {
         if (!class_exists($class) || is_a($class, RequestHandler::class)) {
             throw new ClassNotFoundException();
         }
@@ -88,6 +90,7 @@ class DoxaBackendApp {
             throw new PathAlreadyDefinedException('Path has to be a unique <b>string</b>!');
         }
         $this->services[ $path ] = $class;
+        $this->daos[ $path ] = $dao;
     }
 
     /**
@@ -96,7 +99,7 @@ class DoxaBackendApp {
      */
     private function getRs($start) {
         return isset($this->services[$start])
-            ? new $this->services[$start]($this->requester, $this->request)
+            ? new $this->services[$start]($this->requester, $this->request, new $this->daos[$start]())
             : null;
     }
 }

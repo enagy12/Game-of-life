@@ -3,7 +3,6 @@ namespace hu\chrome\gameoflife\tables;
 
 use hu\doxasoft\phpbackend\AbstractDAO;
 use hu\doxasoft\phpbackend\exceptions\DataCreateException;
-use hu\doxasoft\phpbackend\exceptions\DataEditException;
 use hu\doxasoft\phpbackend\exceptions\DataNotFoundException;
 
 class TablesDAO extends AbstractDAO {

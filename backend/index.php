@@ -4,6 +4,7 @@ require_once 'config.php';
 require __DIR__ . '/vendor/autoload.php';
 
 use hu\chrome\gameoflife\tables\TablesRS;
+use \hu\chrome\gameoflife\tables\TablesDAO;
 use hu\doxasoft\phpbackend\DoxaBackendApp;
 use hu\doxasoft\phpbackend\DoxaBackendConfiguration;
 
@@ -17,6 +18,6 @@ $app = new DoxaBackendApp((new DoxaBackendConfiguration())
     ->ready()
 );
 
-$app->addService('table', TablesRS::class);
+$app->addService('table', TablesRS::class, TablesDAO::class);
 
 $app->run();

@@ -1,6 +1,7 @@
 <?php
 namespace hu\chrome\gameoflife\tables;
 
+use hu\doxasoft\phpbackend\AbstractDAO;
 use hu\doxasoft\phpbackend\authentication\Requester;
 use hu\doxasoft\phpbackend\exceptions\UnknownPathException;
 use hu\doxasoft\phpbackend\Request;
@@ -18,9 +19,9 @@ class TablesRS extends RequestHandler {
 
     private static $BASE_LIF_URL = __DIR__.'/lif';
 
-    public function __construct(Requester &$requester, Request &$req) {
+    public function __construct(Requester &$requester, Request &$req, AbstractDAO &$dao) {
         parent::__construct($requester, $req);
-        $this->tablesDAO = new TablesDAO();
+        $this->tablesDAO = &$dao;
     }
 
     function handleRequest() {
