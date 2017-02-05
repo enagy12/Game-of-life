@@ -22,6 +22,8 @@ declare namespace Application {
         private q;
         private static BASE_URL;
         private static TABLE_NAME_MIN_LENGTH;
+        private static DEFAULT_TABLE_ROWS;
+        private static DEFAULT_TABLE_COLUMNS;
         private _tableRows;
         private _tableColumns;
         private _timer;

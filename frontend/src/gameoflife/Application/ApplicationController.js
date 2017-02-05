@@ -9,8 +9,8 @@ var Application;
             this.scope = scope;
             this.timeout = timeout;
             this.q = q;
-            this._tableRows = 30;
-            this._tableColumns = 50;
+            this._tableRows = ApplicationController.DEFAULT_TABLE_ROWS;
+            this._tableColumns = ApplicationController.DEFAULT_TABLE_COLUMNS;
             this._playing = false;
             this._selectedTableName = 'Pi';
             this._showTableNameWarningTooltip = false;
@@ -67,6 +67,10 @@ var Application;
             var _this = this;
             if (!!this._selectedTableObject.id) {
                 this._table = this._selectedTableObject.table_data;
+                if (this._selectedTableObject.table_data.length > 0) {
+                    this._tableRows = this._selectedTableObject.table_data.length;
+                    this._tableColumns = this._selectedTableObject.table_data[0].cells.length;
+                }
             }
             else {
                 this.http({
@@ -235,6 +239,8 @@ var Application;
         };
         ApplicationController.BASE_URL = 'http://be.gameoflife/api/table/';
         ApplicationController.TABLE_NAME_MIN_LENGTH = 3;
+        ApplicationController.DEFAULT_TABLE_ROWS = 30;
+        ApplicationController.DEFAULT_TABLE_COLUMNS = 50;
         return ApplicationController;
     }());
     Application.ApplicationController = ApplicationController;
